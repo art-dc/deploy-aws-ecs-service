@@ -139,13 +139,17 @@ function getClient() {
 }
 function readServiceDefinitionTemplate(input) {
     const { template } = input;
+    console.log("n", template);
+    console.log("bb", !!template && fs.existsSync(template));
     if (!template || !fs.existsSync(template))
         return;
     const templateContents = fs.readFileSync(template, "utf8");
+    console.log("g", templateContents);
     return yaml_1.parse(templateContents);
 }
 function processServiceDeployInput(input) {
     let serviceToDeploy = readServiceDefinitionTemplate(input);
+    console.log("x", serviceToDeploy);
     if (!serviceToDeploy)
         serviceToDeploy = {};
     const { cluster, desiredCount, taskDefinition, loadBalancers } = input;
@@ -217,6 +221,7 @@ function createService(input) {
         const ecs = getClient();
         const serviceToCreate = processServiceCreateInput(input);
         const { serviceName } = serviceToCreate;
+        console.log("s", serviceToCreate);
         const { service: createdService } = yield ecs
             .createService(serviceToCreate)
             .promise();

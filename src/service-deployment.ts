@@ -31,9 +31,12 @@ function readServiceDefinitionTemplate(
   input: ServiceDeploymentInput
 ): CreateServiceRequest | undefined {
   const { template } = input;
+  console.log("n", template);
+  console.log("bb", !!template && fs.existsSync(template));
   if (!template || !fs.existsSync(template)) return;
 
   const templateContents = fs.readFileSync(template, "utf8");
+  console.log("g", templateContents);
   return parse(templateContents);
 }
 
@@ -41,6 +44,7 @@ function processServiceDeployInput(
   input: ServiceDeploymentInput
 ): CreateServiceRequest {
   let serviceToDeploy = readServiceDefinitionTemplate(input);
+  console.log("x", serviceToDeploy);
   if (!serviceToDeploy) serviceToDeploy = {} as CreateServiceRequest;
 
   const { cluster, desiredCount, taskDefinition, loadBalancers } = input;
@@ -130,6 +134,8 @@ async function createService(input: ServiceDeploymentInput): Promise<Service> {
   const ecs = getClient();
   const serviceToCreate = processServiceCreateInput(input);
   const { serviceName } = serviceToCreate;
+
+  console.log("s", serviceToCreate);
 
   const { service: createdService } = await ecs
     .createService(serviceToCreate)
